@@ -48,7 +48,7 @@ log((new Date()).toLocaleString());
 
 
 
-const URL = 'https://pokeapi.co/api/v2/pokemon/ditto';
+/*const URL = 'https://pokeapi.co/api/v2/pokemon/ditto';
 
 
 log('fetching ' + URL + ' ...');
@@ -77,4 +77,41 @@ nodeFetch(URL)
   .catch(err => log(err.stack));
 
 
-const dotDotDot = setInterval(() => log('...'), 100);
+const dotDotDot = setInterval(() => log('...'), 100);*/
+
+const main = async (URL) => {
+  try {
+    log('fetching ' + URL + ' ...');
+    const dotDotDot = setInterval(() => log('...'), 100);
+    const res = await nodeFetch(URL);
+    clearInterval(dotDotDot);
+
+    log('testing response ...');
+    assert.strictEqual(res.ok, true);
+    assert.strictEqual(res.status, 200);
+
+    log('parsing response ...');
+    const data = await res.json();
+
+    log('testing data ...');
+    assert.strictEqual(data.name, 'ditto');
+    assert.strictEqual(data.id, 132);
+    assert.deepStrictEqual(data.species, {
+      name: "ditto",
+      url: "https://pokeapi.co/api/v2/pokemon-species/132/"
+    });
+    assert.deepStrictEqual(data.forms, [
+      {
+        name: "ditto",
+        url: "https://pokeapi.co/api/v2/pokemon-form/132/",
+      },
+    ]);
+
+    log('... PASS!');
+
+  } catch (err) {
+    log(err.stack);
+  };
+};
+
+main('https://pokeapi.co/api/v2/pokemon/ditto');

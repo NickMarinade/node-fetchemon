@@ -48,7 +48,7 @@ log((new Date()).toLocaleString());
 
 
 
-const main = async (URL) => {
+/*const main = async (URL) => {
   try {
     log('fetching ' + URL + ' ...');
     const dotDotDot = setInterval(() => log('...'), 100);
@@ -83,5 +83,33 @@ const main = async (URL) => {
   };
 };
 
-main('https://pokeapi.co/api/v2/pokemon/butterfree');
+main('https://pokeapi.co/api/v2/pokemon/butterfree');*/
 
+const URL = "https://pokeapi.co/api/v2/pokemon/butterfree";
+
+log("fetching " + URL + " ...");
+nodeFetch(URL)
+  .then((res) => {
+    clearInterval(dotDotDot);
+
+    log("testing response ...");
+    assert.strictEqual(res.ok, true);
+    assert.strictEqual(res.status, 200);
+
+    log("parsing response ...");
+    return res.json();
+  })
+  .then((data) => {
+    log("testing data ...");
+    assert.strictEqual(data.name, "butterfree");
+    assert.strictEqual(data.weight, 320);
+    assert.deepStrictEqual(data.species, {
+      name: "butterfree",
+      url: "https://pokeapi.co/api/v2/pokemon-species/12/",
+    });
+
+    log("... PASS!");
+  })
+  .catch((err) => log(err.stack));
+
+const dotDotDot = setInterval(() => log("..."), 100);
